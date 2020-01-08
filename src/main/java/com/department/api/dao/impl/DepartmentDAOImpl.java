@@ -48,25 +48,36 @@ public class DepartmentDAOImpl extends JdbcDaoSupport implements DepartmentDAO {
 
 	@Override
 	public Department getDepartmentById(String deptId) {
-		
+
 		String sql = "SELECT * FROM department WHERE dept_id = ?";
-		return (Department)getJdbcTemplate().queryForObject(sql, new Object[]{deptId}, new RowMapper<Department>(){
+		
+
+		List test = getJdbcTemplate().query(sql, new Object[] { deptId }, new RowMapper<Department>() {
 			@Override
 			public Department mapRow(ResultSet rs, int rwNumber) throws SQLException {
 				Department dept = new Department();
+
 				dept.setDeptId(rs.getString("dept_id"));
 				dept.setDeptLocation(rs.getString("dept_location"));
-             	dept.setDeptName(rs.getString("dept_name"));
+				dept.setDeptName(rs.getString("dept_name"));
+
 				return dept;
 			}
 		});
-	
+		Department dept1 = null;
+		if (test.isEmpty()) {
+			dept1= new Department(); ;
+		} else if (test.size() == 1) { // list contains exactly 1 element
+			dept1 = (Department) test.get(0);
+		} else { // list contains more than 1 elements
+			// your wish, you can either throw the exception or return 1st element.
 		}
-
+		return dept1;
+	}
 
 	
+
+
 
 
 }
-
-
